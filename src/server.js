@@ -14,7 +14,6 @@ const setupServer = () => {
 
   app.use(express.json());
 
-  // Додаємо кореневий маршрут
   app.get('/', (req, res) => {
     res.status(200).json({
       message: 'Welcome to the Contacts API!',

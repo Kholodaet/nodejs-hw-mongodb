@@ -14,14 +14,8 @@ const setupServer = () => {
 
   app.use(express.json());
 
-  // Додаємо кореневий маршрут
-  app.get('/', (req, res) => {
-    res.status(200).json({
-      message: 'Welcome to the Contacts API!',
-    });
-  });
-
-  app.get('/contacts', async (req, res) => {
+  app.get('/contacts', async (req, res, next) => {
+    console.log(req.params);
     const contacts = await getAllContacts();
     res.status(200).json({
       status: 200,
@@ -30,12 +24,13 @@ const setupServer = () => {
     });
   });
 
-  app.get('/contacts/:contactId', async (req, res) => {
+  app.get('/contacts/:contactId', async (req, res, next) => {
     const { contactId } = req.params;
 
     const contact = await getContactById(contactId);
     if (!contact) {
       return res.status(404).send({
+        // or json
         message: 'Contact not found',
       });
     }
@@ -46,19 +41,18 @@ const setupServer = () => {
     });
   });
 
-  app.use((req, res) => {
+  app.use((req, res, next) => {
     res.status(404).json({ message: 'Not found' });
   });
 
-  app.use((error, req, res) => {
+  app.use((error, req, res, next) => {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   });
 
-  const PORT = Number(env('PORT')) || 3000;
+  const PORT = Number(env('PORT'));
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
-
 export default setupServer;

@@ -14,8 +14,14 @@ const setupServer = () => {
 
   app.use(express.json());
 
+  // Додаємо кореневий маршрут
+  app.get('/', (req, res) => {
+    res.status(200).json({
+      message: 'Welcome to the Contacts API!',
+    });
+  });
+
   app.get('/contacts', async (req, res) => {
-    console.log(req.params);
     const contacts = await getAllContacts();
     res.status(200).json({
       status: 200,
@@ -49,9 +55,10 @@ const setupServer = () => {
     res.status(500).json({ message: 'Internal Server Error' });
   });
 
-  const PORT = Number(env('PORT'));
+  const PORT = Number(env('PORT')) || 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
+
 export default setupServer;

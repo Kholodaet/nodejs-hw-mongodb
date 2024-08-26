@@ -8,7 +8,7 @@ export default [
     languageOptions: { globals: globals.node },
     rules: {
       semi: 'error',
-      'no-unused-vars': 'ignore',
+      'no-unused-vars': 'error',
       'no-undef': 'error',
     },
   },

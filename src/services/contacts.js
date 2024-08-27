@@ -1,22 +1,43 @@
-import { ContactCollection } from '../db/models/contacts.js';
+import ContactsModel from '../db/models/contact.js';
+
 export const getAllContacts = async () => {
-  const contacts = await ContactCollection.find();
+  const contacts = await ContactsModel.find();
   return contacts;
 };
-export const getContactsById = (id) => ContactCollection.findById(id);
 
-export const createContact = (payload) => ContactCollection.create(payload);
+export const getContactById = async (contactId) => {
+  const contact = await ContactsModel.findById(contactId);
+  return contact;
+};
 
-export const deleteContact = (contactId) =>
-  ContactCollection.findOneAndDelete(contactId);
+export const createContact = async (payload) => {
+  const contact = await ContactsModel.create(payload);
+  return contact;
+};
 
 export const updateContact = async (contactId, payload, options = {}) => {
-  const contact = await ContactCollection.findOneAndUpdate(
-    {
-      _id: contactId,
-    },
+  const rawResult = await ContactsModel.findOneAndUpdate(
+    { _id: contactId },
     payload,
-    { ...options },
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
   );
+
+  if (!rawResult || !rawResult.value) return null;
+
+  return {
+    contact: rawResult.value,
+    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
+  };
+};
+
+export const deleteContact = async (contactId) => {
+  const contact = await ContactsModel.findOneAndDelete({
+    _id: contactId,
+  });
+
   return contact;
 };

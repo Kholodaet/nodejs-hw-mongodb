@@ -1,24 +1,23 @@
 import { Router } from 'express';
-import ctrlWrapper from '../utils/ctrlWrapper.js';
 import {
+  getContactsController,
+  getContactByIdController,
   createContactController,
+  patchContactController,
   deleteContactController,
-  getAllContactsConroller,
-  getContactsByIdController,
-  updateContactController,
 } from '../controllers/contacts.js';
-import isValid from '../middlewares/isValid.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
-const contactsRouter = Router();
+const router = Router();
 
-contactsRouter.get('/', ctrlWrapper(getAllContactsConroller));
+router.get('/contacts', ctrlWrapper(getContactsController));
 
-contactsRouter.get('/:id', isValid, ctrlWrapper(getContactsByIdController));
+router.get('/contacts/:contactId', ctrlWrapper(getContactByIdController));
 
-contactsRouter.post('/', ctrlWrapper(createContactController));
+router.post('/contacts', ctrlWrapper(createContactController));
 
-contactsRouter.patch('/:id', isValid, ctrlWrapper(updateContactController));
+router.patch('/contacts/:contactId', ctrlWrapper(patchContactController));
 
-contactsRouter.delete('/:id', isValid, ctrlWrapper(deleteContactController));
+router.delete('/contacts/:contactId', ctrlWrapper(deleteContactController));
 
-export default contactsRouter;
+export default router;

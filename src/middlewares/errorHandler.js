@@ -1,19 +1,19 @@
 import { HttpError } from 'http-errors';
-const errorHandler = (error, req, res, next) => {
-  if (error instanceof HttpError) {
-    const { status, message } = error;
-    res.status(status).json({
-      status,
-      message,
-      data: error,
+
+export const errorHandler = (err, req, res, next) => {
+  if (err instanceof HttpError) {
+    res.status(err.status).json({
+      status: err.status,
+      message: err.name,
+      data: err,
     });
     return;
   }
-  res.status(404).json({
-    status: 404,
+
+  res.status(500).json({
+    status: 500,
     message: 'Something went wrong',
-    data: { message: 'Contact not found' },
+    error: err.message,
   });
   next();
 };
-export default errorHandler;

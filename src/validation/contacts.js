@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { typeList } from '../constants/constants.js';
+import { typeList } from '../constants/contacts-constants.js';
 
 export const createContactSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
@@ -26,7 +26,7 @@ export const updateContactSchema = Joi.object({
     'string.max': 'Username should have at most {#limit} characters',
   }),
   phoneNumber: Joi.string().min(6).max(16).messages({
-    'string.base': 'Phone number should be a string',
+    'string.base': 'Phone number should be a string', // Кастомізація повідомлення для типу "string"
     'string.min': 'Phone number should have at least {#limit} characters',
     'string.max': 'Phone number should have at most {#limit} characters',
   }),

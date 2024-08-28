@@ -8,7 +8,7 @@ import {
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import parseSortParams from '../utils/parseSortParams.js';
-import { contactFieldList } from '../constants/contacts-constants.js';
+import { contactFieldList } from '../constants/contactsConstants.js';
 import parseFilterParams from '../utils/parseFilterParams.js';
 
 export const getContactsController = async (req, res) => {

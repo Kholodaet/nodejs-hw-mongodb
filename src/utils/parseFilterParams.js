@@ -1,4 +1,4 @@
-import { typeList } from '../constants/constants';
+import { typeList } from '../constants/constants.js';
 
 const parseBoolean = (value) => {
   if (typeof value !== 'string') return;

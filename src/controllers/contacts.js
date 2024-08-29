@@ -1,21 +1,20 @@
+import createHttpError from 'http-errors';
 import {
   getAllContacts,
   getContactById,
-  createContact,
-  updateContact,
+  addContact,
   deleteContact,
-} from '../services/contacts.js';
-import createHttpError from 'http-errors';
-import { parsePaginationParams } from '../utils/parsePaginationParams.js';
-import parseSortParams from '../utils/parseSortParams.js';
-import { contactFieldList } from '../constants/contactsConstants.js';
-import parseFilterParams from '../utils/parseFilterParams.js';
+  patchContact,
+} from './../services/contacts.js';
 
-export const getContactsController = async (req, res) => {
-  const { query } = req;
-  const { page, perPage } = parsePaginationParams(query);
-  const { sortBy, sortOrder } = parseSortParams(query, contactFieldList);
-  const filter = parseFilterParams(query);
+import { parseFilterParams } from './../utils/parseFilterParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+
+export const getAllContactsController = async (req, res, next) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const filter = parseFilterParams(req.query);
 
   const contacts = await getAllContacts({
     page,
@@ -24,64 +23,86 @@ export const getContactsController = async (req, res) => {
     sortOrder,
     filter,
   });
-
-  res.status(200).json({
+  if (contacts.length === 0) {
+    return next(createHttpError(404, 'Contacts not found'));
+  }
+  if (page > contacts.totalPages) {
+    return next(createHttpError(404, 'Page not found'));
+  }
+  res.status(200).send({
     status: 200,
     message: 'Successfully found contacts!',
     data: contacts,
   });
 };
 
-export const getContactByIdController = async (req, res, next) => {
+export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
 
   if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+    throw createHttpError(404, 'Contact not found');
   }
 
-  res.status(200).json({
+  res.json({
     status: 200,
-    message: `Successfully found contact with id ${contactId}!`,
+    message: `Successfully found a contact with id ${contactId}!`,
     data: contact,
   });
 };
 
-export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
+export const addContactController = async (req, res) => {
+  const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+
+  if (!name || !phoneNumber) {
+    throw createHttpError(400, 'Name and phone number are required fields.');
+  }
+
+  const contact = await addContact({
+    name,
+    phoneNumber,
+    email,
+    isFavourite,
+    contactType,
+  });
 
   res.status(201).json({
     status: 201,
-    message: `Successfully created a contact!`,
+    message: 'Successfully created a contact',
     data: contact,
   });
 };
 
-export const patchContactController = async (req, res, next) => {
+export const patchContactController = async (req, res) => {
   const { contactId } = req.params;
-  const result = await updateContact(contactId, req.body);
+  const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+
+  const result = await patchContact(contactId, {
+    name,
+    phoneNumber,
+    email,
+    isFavourite,
+    contactType,
+  });
 
   if (!result) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+    throw createHttpError(404, 'Contact not found');
   }
 
-  res.status(200).json({
+  res.json({
     status: 200,
-    message: `Successfully patched a contact!`,
-    data: result.contact,
+    message: 'Successfully patched a contact',
+    data: result,
   });
 };
-
-export const deleteContactController = async (req, res, next) => {
+export const deleteContactController = async (req, res) => {
   const { contactId } = req.params;
+
   const contact = await deleteContact(contactId);
 
   if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
-    return;
+    throw createHttpError(404, 'Contact not found');
   }
 
-  res.status(204).send();
+  res.sendStatus(204).end();
 };

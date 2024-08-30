@@ -1,48 +1,52 @@
 import { Router } from 'express';
-import express from 'express';
-import { ctrlWrapper } from './../utils/ctrlWrapper.js';
 import {
-  getAllContactsController,
-  getContactByIdController,
-  addContactController,
-  patchContactController,
+  getContactsController,
+  getContactsByIdController,
+  createContactController,
   deleteContactController,
-} from './../controllers/contacts.js';
+  upsertContactController,
+  patchContactController,
+} from '../controllers/contacts.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import { validateBody } from '../middlewares/validateBody.js';
+import {
+  createContactSchema,
+  updateContactSchema,
+} from '../validation/contacts.js';
+import { isValidId } from '../middlewares/isValidId.js';
 
-import { updateContactSchema } from './../validation/updateContactSchema.js';
-import { createContactSchema } from './../validation/createContactSchema.js';
-import { validateBody } from './../middlewares/validateBody.js';
-import { isValidID } from './../middlewares/isValidId.js';
-
-const jsonParser = express.json();
 const router = Router();
 
-router.get('/contacts', ctrlWrapper(getAllContactsController));
+router.get('/contacts', ctrlWrapper(getContactsController));
 
 router.get(
   '/contacts/:contactId',
-  isValidID,
-  ctrlWrapper(getContactByIdController),
+  isValidId,
+  ctrlWrapper(getContactsByIdController),
 );
 
 router.post(
   '/contacts',
-  jsonParser,
   validateBody(createContactSchema),
-  ctrlWrapper(addContactController),
-);
-
-router.patch(
-  '/contacts/:contactId',
-  jsonParser,
-  validateBody(updateContactSchema),
-  ctrlWrapper(patchContactController),
+  ctrlWrapper(createContactController),
 );
 
 router.delete(
   '/contacts/:contactId',
-  isValidID,
+  isValidId,
   ctrlWrapper(deleteContactController),
+);
+
+router.put(
+  '/contacts/:contactId',
+  validateBody(createContactSchema),
+  ctrlWrapper(upsertContactController),
+);
+
+router.patch(
+  '/contacts/:contactId',
+  validateBody(updateContactSchema),
+  ctrlWrapper(patchContactController),
 );
 
 export default router;

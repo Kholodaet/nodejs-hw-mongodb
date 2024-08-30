@@ -1,34 +1,19 @@
-function parseContactType(contactType) {
-  if (typeof contactType !== 'string') {
-    return undefined;
-  }
+const parsecontactType = (contactType) => {
+  if (typeof contactType !== 'string') return;
+  const isValidContactType = ['work', 'home', 'personal'].includes(contactType);
 
-  const isContactType = (contactType) =>
-    ['work', 'home', 'personal'].includes(contactType);
+  if (!isValidContactType) return;
 
-  if (isContactType(contactType)) return contactType;
-}
+  return contactType;
+};
 
-function parseIsFavourite(isFavourite) {
-  if (typeof isFavourite !== 'string') {
-    return undefined;
-  }
-  const isIsFavourite = (isFavourite) =>
-    // [isFavourite === true || isFavourite === false].includes(isFavourite);
-    ['true', 'false'].includes(isFavourite);
-  if (isIsFavourite(isFavourite)) {
-    return isFavourite;
-  }
-}
+const parseIsFavourite = (isFavourite) => {
+  return isFavourite === 'true';
+};
 
-export function parseFilterParams(query) {
-  const { contactType, isFavourite } = query;
-
-  const parsedContactType = parseContactType(contactType);
-  const parsedIsFavourite = parseIsFavourite(isFavourite);
-
+export const parseFilterParams = ({ type, isFavourite }) => {
   return {
-    contactType: parsedContactType,
-    isFavourite: parsedIsFavourite,
+    type: parsecontactType(type),
+    isFavourite: parseIsFavourite(isFavourite),
   };
-}
+};

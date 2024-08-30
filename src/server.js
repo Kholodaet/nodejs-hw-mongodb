@@ -1,14 +1,15 @@
 import express from 'express';
-import cors from 'cors';
 import pino from 'pino-http';
+import cors from 'cors';
+
 import { env } from './utils/env.js';
 import contactsRouter from './routers/contacts.js';
-import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 const PORT = Number(env('PORT', '3000'));
 
-export const setupServer = () => {
+export const startServer = () => {
   const app = express();
 
   app.use(express.json());
@@ -21,6 +22,12 @@ export const setupServer = () => {
       },
     }),
   );
+
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Your server is successfully responding to the request.',
+    });
+  });
 
   app.use(contactsRouter);
 

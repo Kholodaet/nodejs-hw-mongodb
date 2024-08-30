@@ -8,15 +8,7 @@ export default [
     languageOptions: { globals: globals.node },
     rules: {
       semi: 'error',
-      'no-unused-vars': [
-        'error',
-        {
-          vars: 'all',
-          args: 'after-used',
-          ignoreRestSiblings: true,
-          argsIgnorePattern: '^_',
-        },
-      ],
+      'no-unused-vars': ['error', { args: 'none' }],
       'no-undef': 'error',
     },
   },

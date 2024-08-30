@@ -1,13 +1,13 @@
 import { Router } from 'express';
 import {
-  getContactsController,
-  getContactsByIdController,
   createContactController,
   deleteContactController,
-  upsertContactController,
+  getContactByIdController,
+  getContactsController,
   patchContactController,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+
 import { validateBody } from '../middlewares/validateBody.js';
 import {
   createContactSchema,
@@ -19,11 +19,7 @@ const router = Router();
 
 router.get('/contacts', ctrlWrapper(getContactsController));
 
-router.get(
-  '/contacts/:contactId',
-  isValidId,
-  ctrlWrapper(getContactsByIdController),
-);
+router.get('/contacts/:id', isValidId, ctrlWrapper(getContactByIdController));
 
 router.post(
   '/contacts',
@@ -31,22 +27,13 @@ router.post(
   ctrlWrapper(createContactController),
 );
 
-router.delete(
-  '/contacts/:contactId',
-  isValidId,
-  ctrlWrapper(deleteContactController),
-);
-
-router.put(
-  '/contacts/:contactId',
-  validateBody(createContactSchema),
-  ctrlWrapper(upsertContactController),
-);
-
 router.patch(
-  '/contacts/:contactId',
+  '/contacts/:id',
+  isValidId,
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
+
+router.delete('/contacts/:id', isValidId, ctrlWrapper(deleteContactController));
 
 export default router;

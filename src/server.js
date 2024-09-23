@@ -6,6 +6,7 @@ import router from './routers/index.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import cookieParser from 'cookie-parser';
+import { sendEmailError } from './middlewares/sendEmailError.js';
 
 const PORT = Number(env('PORT', '3000'));
 
@@ -27,6 +28,8 @@ export const setupServer = () => {
   app.use(router);
 
   app.use('*', notFoundHandler);
+
+  app.use('/auth/send-reset-email', sendEmailError);
 
   app.use(errorHandler);
 

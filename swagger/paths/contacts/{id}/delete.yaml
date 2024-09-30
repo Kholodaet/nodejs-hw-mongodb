@@ -1,8 +1,8 @@
 tags:
   - Contacts
-summary: Delete contact by id
+summary: Delete a contact by ID
 operationId: deleteContact
-description: 'Delete contact by id'
+description: 'Delete a contact using the contact ID.'
 security:
   - bearerAuth: []
 parameters:
@@ -11,11 +11,56 @@ parameters:
     required: true
     schema:
       type: string
-      example: '65ca67e7ae7f10c88b598384'
+      format: objectid
+    description: 'ID of the contact to be deleted.'
+    example: '60c72b2f9b1e4f45a1d09b4f'
 responses:
   '204':
-    description: Delete a contact
+    description: Contact successfully deleted
+  '400':
+    description: Bad request, invalid input data or ID format.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: Invalid contact ID format. Please check the request URL.
   '401':
     $ref: '../../../components/responses/401.yaml'
   '404':
-    $ref: '../../../components/responses/404.yaml'
+    description: Contact not found
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: Contact with ID 60c72b2f9b1e4f45a1d09b4f not found.
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 500
+            message:
+              type: string
+              example: An unexpected error occurred.

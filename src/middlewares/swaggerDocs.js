@@ -8,9 +8,12 @@ export const swaggerDocs = () => {
   try {
     const swaggerDoc = JSON.parse(fs.readFileSync(SWAGGER_PATH).toString());
     return [...swaggerUI.serve, swaggerUI.setup(swaggerDoc)];
-    // eslint-disable-next-line no-unused-vars
   } catch (err) {
     return (req, res, next) =>
-      next(createHttpError(500, "Can't load swagger docs"));
+      next(
+        createHttpError(500, "Can't load swagger docs", {
+          errors: err.details,
+        }),
+      );
   }
 };

@@ -190,7 +190,7 @@
                   "photo": {
                     "description": "Link to contact's photo",
                     "type": "string",
-                    "example": "https://res.cloudinary.com/dciuk2mtq/image/upload/v1724599213/pl7yzhsi7ibksqz3zaiu.png"
+                    "example": "https://res.cloudinary.com/dojdfq9xh/image/upload/v1727115221/edml3od5vkwhhnyygohz.jpg"
                   }
                 }
               }
@@ -343,7 +343,7 @@
                   "photo": {
                     "description": "Link to contact's photo",
                     "type": "string",
-                    "example": "https://res.cloudinary.com/dciuk2mtq/image/upload/v1724599213/pl7yzhsi7ibksqz3zaiu.png"
+                    "example": "https://res.cloudinary.com/dojdfq9xh/image/upload/v1727115221/edml3od5vkwhhnyygohz.jpg"
                   }
                 }
               }

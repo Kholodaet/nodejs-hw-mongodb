@@ -210,8 +210,8 @@
                   },
                   "photo": {
                     "type": "string",
-                    "format": "binary",
-                    "description": "Сontact's photo (as a file)"
+                    "format": "string",
+                    "description": "Сontact's photo URL"
                   }
                 }
               }

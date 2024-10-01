@@ -504,9 +504,9 @@
                     "example": "personal"
                   },
                   "photo": {
-                    "description": "Contact's photo",
+                    "description": "Link to contact's photo",
                     "type": "string",
-                    "format": "binary"
+                    "example": "https://res.cloudinary.com/dciuk2mtq/image/upload/v1724599213/pl7yzhsi7ibksqz3zaiu.png"
                   }
                 },
                 "additionalProperties": false
@@ -1116,9 +1116,9 @@
             "example": "66c83c1caa9c6bfadda10e5b"
           },
           "photo": {
-            "description": "URL to the contact's photo",
+            "description": "Link to contact's photo",
             "type": "string",
-            "example": "https://res.cloudinary.com/dojdfq9xh/image/upload/example.jpeg"
+            "example": "https://res.cloudinary.com/dciuk2mtq/image/upload/v1724599213/pl7yzhsi7ibksqz3zaiu.png"
           }
         }
       }

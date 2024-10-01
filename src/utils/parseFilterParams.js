@@ -1,29 +1,27 @@
-const parseGender = (gender) => {
-  const isString = typeof gender === 'string';
-  if (!isString) return;
-  const isGender = (gender) => ['male', 'female', 'other'].includes(gender);
+import { CONTACT_TYPE_VALUES } from '../constants/constants.js';
 
-  if (isGender(gender)) return gender;
+const parseType = (type) => {
+  if (typeof type !== 'string') return null;
+
+  const isType = (type) => CONTACT_TYPE_VALUES.includes(type);
+
+  return isType(type) ? type : null;
 };
 
-const parseNumber = (number) => {
-  const isString = typeof number === 'string';
-  if (!isString) return;
+const parseIsFavourite = (isFavourite) => {
+  if (typeof isFavourite !== 'string') return null;
 
-  const parsedNumber = parseInt(number);
-  if (Number.isNaN(parsedNumber)) {
-    return;
-  }
+  if (isFavourite === 'true') return true;
+  if (isFavourite === 'false') return false;
 
-  return parsedNumber;
+  return null;
 };
+
 export const parseFilterParams = (query) => {
   const { contactType, isFavourite } = query;
 
-  const parsedContactType = parseGender(contactType);
-  const parsedIsFavourite = parseNumber(isFavourite);
-  return {
-    contactType: parsedContactType,
-    isFavourite: parsedIsFavourite,
-  };
+  const parsedType = parseType(contactType);
+  const parsedIsFavourite = parseIsFavourite(isFavourite);
+
+  return { contactType: parsedType, isFavourite: parsedIsFavourite };
 };

@@ -40,4 +40,4 @@ properties:
   photo:
     description: "URL to the contact's photo"
     type: string
-    example: 'https://res.cloudinary.com/dojdfq9xh/image/upload/example.jpeg'
+    example: 'https://res.cloudinary.com/dojdfq9xh/image/upload/v1727700318/mrn9cua1sbdsexwqaee0.jpg'

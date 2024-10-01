@@ -1,8 +1,8 @@
 tags:
   - Contacts
-summary: Create a contact
+summary: Create contact
 operationId: createContact
-description: 'Create a contact with the provided information.'
+description: 'Create a contact with payload'
 security:
   - bearerAuth: []
 requestBody:
@@ -13,41 +13,38 @@ requestBody:
         required:
           - name
           - phoneNumber
-          - email
+          - contactType
         properties:
           name:
             description: "Contact's name"
             type: string
-            example: 'Jane Doe'
+            minLength: 3
+            maxLength: 20
+            example: 'John Doe'
           phoneNumber:
-            description: "Contact's phone number"
             type: string
-            example: '+1234567890'
+            description: Contact phone number
+            example: '+380671338855'
           email:
-            description: "Contact's email"
             type: string
-            format: email
-            example: janedoe@example.com
+            description: Contact email
+            example: test@gmail.com
           isFavourite:
-            description: 'Is the contact marked as favourite?'
             type: boolean
-            example: false
+            description: Whether the contact if favourite
+            default: false
           contactType:
-            description: 'Type of contact'
             type: string
-            enum:
-              - work
-              - home
-              - personal
-            example: personal
+            description: Type of contact
+            enum: ['work', 'home', 'personal']
+            example: home
           photo:
-            description: "Contact's photo"
             type: string
             format: binary
-  description: 'Details of the contact to be created.'
+            description: Сontact's photo (as a file)
 responses:
   '201':
-    description: Contact created successfully
+    description: Creates a contact
     content:
       application/json:
         schema:
@@ -62,35 +59,11 @@ responses:
               example: 201
             message:
               type: string
-              example: Successfully created a contact!
+              example: Successfully created a contact
             data:
               type: object
-              $ref: ../../components/responses/schemas/contact.yaml
+              $ref: ../../components/schemas/contact.yaml
   '400':
-    description: Bad request, invalid input data.
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 400
-            message:
-              type: string
-              example: Invalid input data. Please check the request body.
+    $ref: ../../components/responses/contacts/400.yaml
   '401':
-    $ref: '../../components/responses/401.yaml'
-  '500':
-    description: Internal server error
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 500
-            message:
-              type: string
-              example: An unexpected error occurred.
+    $ref: ../../components/responses/contacts/401.yaml

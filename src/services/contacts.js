@@ -1,86 +1,84 @@
-import { ContactsCollection } from '../db/models/contacts.js';
+import { SORT_ORDER } from '../constants/constants.js';
+import ContactsCollection from '../db/models/contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-import { SORT_ORDER } from '../constants/index.js';
+import { saveFile } from '../utils/saveFile.js';
+
 export const getAllContacts = async ({
   page = 1,
   perPage = 10,
+  sortBy = 'name',
   sortOrder = SORT_ORDER.ASC,
-  sortBy = '_id',
   filter = {},
   userId,
 }) => {
-  try {
-    const limit = perPage;
-    const skip = (page - 1) * perPage;
-    const contactsQuery = ContactsCollection.find();
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
 
-    // Фільтрування за типом
-    if (filter.contactType) {
-      contactsQuery.where('contactType').equals(filter.type);
-    }
+  const contactsFilter = ContactsCollection.find();
 
-    // Фільтрування за isFavourite
-    if (typeof filter.isFavourite !== 'undefined') {
-      contactsQuery.where('isFavorite').equals(filter.isFavourite);
-    }
-    contactsQuery.where('userId').equals(userId);
-    const [contactsCount, contact] = await Promise.all([
-      ContactsCollection.find().merge(contactsQuery).countDocuments(),
-      contactsQuery
-        .skip(skip)
-        .limit(limit)
-        .sort({ [sortBy]: sortOrder })
-        .exec(),
-    ]);
-
-    const paginationData = calculatePaginationData(
-      contactsCount,
-      perPage,
-      page,
-    );
-    console.log('Contacts:', contact);
-    return {
-      data: contact,
-      ...paginationData,
-    };
-  } catch (error) {
-    console.error('Error fetching contacts:', error);
-    throw error;
-  }
-};
-
-export const getContactsById = async (id, userId) => {
-  const contact = await ContactsCollection.findOne({ _id: id, userId });
-  return contact;
-};
-
-export const createContacts = async (payload) => {
-  const contact = await ContactsCollection.create(payload);
-  return contact;
-};
-
-export const updateContact = async (id, payload, userId, options = {}) => {
-  const opaResult = await ContactsCollection.findOneAndUpdate(
-    { _id: id, userId },
-    { $set: payload },
-
-    { new: true, ...options },
-  );
-
-  if (!opaResult) {
-    return null;
+  if (filter.contactType) {
+    contactsFilter.where('contactType').equals(filter.contactType);
   }
 
-  return {
-    contact: opaResult,
-    isNew: Boolean(options?.upsert),
-  };
+  if (filter.isFavourite !== null) {
+    contactsFilter.where('isFavourite').equals(filter.isFavourite);
+  }
+
+  contactsFilter.where('userId').equals(userId);
+
+  const [count, data] = await Promise.all([
+    ContactsCollection.find().merge(contactsFilter).countDocuments(),
+    ContactsCollection.find()
+      .merge(contactsFilter)
+      .skip(skip)
+      .limit(limit)
+      .sort({
+        [sortBy]: sortOrder,
+      })
+      .exec(),
+  ]);
+
+  const paginationInformation = calculatePaginationData(page, perPage, count);
+
+  return { data, ...paginationInformation };
 };
-export const deleteContacts = async (id, userId) => {
-  const contact = await ContactsCollection.findOneAndDelete({
+
+export const getContactById = async (id, userId) => {
+  return await ContactsCollection.findOne({
     _id: id,
     userId,
   });
+};
 
-  return contact;
+export const createContact = async ({ photo, ...payload }, userId) => {
+  let url = null;
+
+  if (photo) {
+    url = await saveFile(photo);
+  }
+
+  return await ContactsCollection.create({ ...payload, userId, photo: url });
+};
+
+export const updateContact = async (
+  contactId,
+  { photo, ...payload },
+  userId,
+) => {
+  let updatedData = { ...payload };
+
+  if (photo) {
+    const url = await saveFile(photo);
+    updatedData.photo = url;
+  }
+
+  return await ContactsCollection.findOneAndUpdate(
+    { _id: contactId, userId },
+    updatedData,
+    { new: true },
+  );
+};
+
+export const deleteContactById = async (id, userId) => {
+  return await ContactsCollection.findOneAndDelete({ _id: id, userId });
 };

@@ -1,8 +1,8 @@
 tags:
   - Contacts
 summary: Get list of contacts
-operationId: getContacts
-description: 'Retrieve a list of contacts with optional filtering and sorting'
+operationId: getAllContacts
+description: 'Get list of contacts. You can get access only to contacts added by you'
 security:
   - bearerAuth: []
 parameters:
@@ -10,43 +10,39 @@ parameters:
     name: page
     schema:
       type: integer
-      example: 1
-    description: 'Page number for pagination'
+    example: 1
   - in: query
     name: perPage
     schema:
       type: integer
       example: 10
-    description: 'Number of contacts per page'
   - in: query
     name: sortBy
     schema:
       type: string
-      example: '_id'
-    description: 'Field to sort by. Default value is _id'
+      example: 'name'
+    description: "All contact's fields can be mentioned. Default value - name"
   - in: query
     name: sortOrder
     schema:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
-    description: "Order to sort the results. Can be 'asc' or 'desc'."
   - in: query
-    name: userId
+    name: isFavourite
+    schema:
+      type: boolean
+      example: false
+  - in: query
+    name: contactType
     schema:
       type: string
-      format: objectid
-      example: 60c72b2f9b1e4f45a1d09b4f
-    description: 'Filter contacts by user ID'
-  - in: query
-    name: filter
-    schema:
-      type: object
-      additionalProperties: true
-    description: 'Additional filter criteria for querying contacts. This field can be used to specify other filters, e.g., isFavourite.'
+      enum: ['work', 'home', 'personal']
+      example: home
+
 responses:
   '200':
-    description: Successfully retrieved contacts
+    description: Successfully found contacts!
     content:
       application/json:
         schema:
@@ -70,30 +66,31 @@ responses:
                 - perPage
                 - totalItems
                 - totalPages
-                - hasNextPage
                 - hasPreviousPage
+                - hasNextPage
               properties:
                 data:
                   type: array
                   items:
-                    $ref: ../../components/responses/schemas/contact.yaml
+                    $ref: ../../components/schemas/contact.yaml
                 page:
-                  type: integer
-                  example: 1
+                  type: number
+                  example: 2
                 perPage:
-                  type: integer
-                  example: 10
+                  type: number
+                  example: 4
                 totalItems:
-                  type: integer
-                  example: 25
+                  type: number
+                  example: 4
                 totalPages:
-                  type: integer
-                  example: 3
-                hasNextPage:
-                  type: boolean
-                  example: true
+                  type: number
+                  example: 4
                 hasPreviousPage:
                   type: boolean
+                  example: true
+                hasNextPage:
+                  type: boolean
                   example: false
+
   '401':
-    $ref: '../../components/responses/401.yaml'
+    $ref: ../../components/responses/contacts/401.yaml

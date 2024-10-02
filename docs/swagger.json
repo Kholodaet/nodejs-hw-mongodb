@@ -210,8 +210,8 @@
                   },
                   "photo": {
                     "type": "string",
-                    "format": "string",
-                    "description": "Сontact's photo URL"
+                    "format": "binary",
+                    "description": "Сontact's photo"
                   }
                 }
               }
@@ -874,7 +874,7 @@
           "photo": {
             "type": "string",
             "description": "Link to contact's photo",
-            "example": "https://res.cloudinary.com/dtb0hczg2/image/upload/v1723745670/kxq2xjbwex2dcw7fvww1.webp"
+            "example": "https://res.cloudinary.com/dojdfq9xh/image/upload/v1727700318/mrn9cua1sbdsexwqaee0.jpg"
           },
           "updatedAt": {
             "type": "string",

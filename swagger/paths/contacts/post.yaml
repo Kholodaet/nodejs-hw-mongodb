@@ -40,8 +40,8 @@ requestBody:
             example: home
           photo:
             type: string
-            format: string
-            description: Сontact's photo URL
+            format: binary
+            description: Сontact's photo
 responses:
   '201':
     description: Creates a contact
